@@ -32,8 +32,7 @@ export default function Homepage(props: { tweets: any[] }) {
 
   const { query, push } = useRouter();
   // maybe id is a better idea cause this will shift shared links but idgaf right now
-  const parsedIndex = parseInt(query.tweet as string, 10) || 0;
-  const tweetIndex = isNaN(parsedIndex) ? 0 : parsedIndex;
+  const tweetId = query.tweet as string;
 
   const { data: tweetsData } = useSWR("/api/tweets", (key) => fetchAPI(key));
 
@@ -41,6 +40,12 @@ export default function Homepage(props: { tweets: any[] }) {
     // @ts-ignore
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
+
+  const tweetIndex = tweetId
+    ? tweets.findIndex((tweet: any) => tweet._id === tweetId)
+    : 0;
+
+  console.log(tweetIndex, tweets[1]._id, tweets[1]._id === tweetId);
 
   const tweetRegex =
     /^https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(es)?\/(\d+)$/i;
@@ -96,7 +101,7 @@ export default function Homepage(props: { tweets: any[] }) {
               onClick={() => {
                 if (tweetIndex === 0) return;
 
-                push(`/?tweet=${tweetIndex - 1}`, undefined, {
+                push(`/?tweet=${tweets[tweetIndex - 1]._id}`, undefined, {
                   shallow: true,
                 });
               }}
@@ -215,7 +220,7 @@ export default function Homepage(props: { tweets: any[] }) {
               onClick={() => {
                 if (tweetIndex === tweets.length - 1) return;
 
-                push(`/?tweet=${tweetIndex + 1}`, undefined, {
+                push(`/?tweet=${tweets[tweetIndex + 1]._id}`, undefined, {
                   shallow: true,
                 });
               }}
@@ -233,7 +238,7 @@ export default function Homepage(props: { tweets: any[] }) {
                 onClick={() => {
                   if (tweetIndex === 0) return;
 
-                  push(`/?tweet=${tweetIndex - 1}`, undefined, {
+                  push(`/?tweet=${tweets[tweetIndex - 1]._id}`, undefined, {
                     shallow: true,
                   });
                 }}
@@ -250,7 +255,7 @@ export default function Homepage(props: { tweets: any[] }) {
                 onClick={() => {
                   if (tweetIndex === tweets.length - 1) return;
 
-                  push(`/?tweet=${tweetIndex + 1}`, undefined, {
+                  push(`/?tweet=${tweets[tweetIndex + 1]._id}`, undefined, {
                     shallow: true,
                   });
                 }}
